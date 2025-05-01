@@ -1,0 +1,7 @@
+telebot
+rich
+uncompyle6
+pyyaml
+requests
+pyTelegramBotAPI
+rich
