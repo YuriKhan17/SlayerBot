@@ -21,7 +21,7 @@ SlayerBot is an automated Telegram bot for analyzing obfuscated Python malware. 
 SlayerBot/
 ├── decode_tool.py             🔍 Full decoder engine (XOR, marshal, .pyc, base64, zip, etc.)
 ├── tele_decode_bot.py         🤖 Telegram bot interface
-├── FakePyahmed_v3.c           🪤 Trap .so to log and analyze demons
+├── Fake.c                     🪤 Trap .so to log and analyze demons
 ├── Makefile                   🛠 Auto compile trap
 ├── spyblade_log.txt           📓 Created when demon triggers the trap
 ├── decoded/                   📁 All timestamped decoded outputs
