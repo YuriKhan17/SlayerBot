@@ -70,7 +70,7 @@ python tele_decode_bot.py
 
 ## 📧 Contact
 
-- Telegram - [Yuri](https://t.me/r4_cm)
+- Telegram - [@Yuri](https://t.me/r4_cm)
 
 ---
 
