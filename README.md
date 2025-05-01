@@ -34,7 +34,7 @@ SlayerBot/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/SlayerBot.git
+git clone https://github.com/YuriKhan17/SlayerBot.git
 cd SlayerBot
 ```
 
@@ -107,7 +107,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📧 Contact
 
 - Your Name - [your.email@example.com](mailto:your.email@example.com)
-- Project Link: [https://github.com/yourusername/SlayerBot](https://github.com/yourusername/SlayerBot)
+- Project Link: [https://github.com/YuriKhan17/SlayerBot](https://github.com/YuriKhan17/SlayerBot)
 
 ## 🙏 Acknowledgments
 
