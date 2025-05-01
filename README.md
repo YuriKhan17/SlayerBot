@@ -106,8 +106,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📧 Contact
 
-- Your Name - [your.email@example.com](mailto:your.email@example.com)
-- Project Link: [https://github.com/YuriKhan17/SlayerBot](https://github.com/YuriKhan17/SlayerBot)
+- Telegram - [https://t.me/r4_cm](https://t.me/r4_cm)
 
 ## 🙏 Acknowledgments
 
