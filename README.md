@@ -67,51 +67,10 @@ python tele_decode_bot.py
    - A detailed markdown report of findings
    - Log files if any suspicious activity was detected
 
-## 🛡️ Security Notes
-
-- **⚠️ Always handle malware with caution**
-- Run this tool in a safe, isolated environment
-- The trap `.so` file should be handled carefully as it's designed to attract malicious code
-- Only allow trusted users access to your bot (set their user IDs in the allowed users list)
-
-## 🧪 Advanced Usage
-
-### Trap Mechanism
-
-The `FakePyahmed_v3.c` file creates a shared object that mimics common tools used by malware. When malicious code attempts to use this library, it logs the interaction to `spyblade_log.txt` for analysis.
-
-To build the trap:
-```bash
-make clean
-make
-```
-
-### Customizing Decoders
-
-You can extend the decoders in `decode_tool.py` to handle additional obfuscation techniques by implementing new detection and decoding functions.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## 📧 Contact
 
 - Telegram - [https://t.me/r4_cm](https://t.me/r4_cm)
-
-## 🙏 Acknowledgments
-
-- [Python-Telegram-Bot](https://github.com/python-telegram-bot/python-telegram-bot) for the Telegram API wrapper
-- All security researchers sharing knowledge on malware obfuscation techniques
 
 ---
 
