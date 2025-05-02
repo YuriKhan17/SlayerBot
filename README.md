@@ -16,7 +16,7 @@
 | **Multi-Layer Decoding** | Decodes `base64`, `marshal`, `zlib`, `XOR`, `eval/exec` chains, and embedded `.zip` files |
 | **Behavioral Analysis** | AST-based detection of dangerous calls (`system`, `eval`, `ctypes`) |
 | **Network Forensics** | Extracts URLs, IPs, and API keys from obfuscated payloads |
-| **Honeypot Trap** | `FakePyahmed.so` logs malware interactions with native libraries |
+| **Honeypot Trap** | `Fake.so` logs malware interactions with native libraries |
 | **Telegram Bot** | Secure remote analysis via encrypted Telegram API |
 | **Markdown Reports** | Detailed analysis output with risk scoring |
 
@@ -42,7 +42,7 @@ make clean && make
 
 # Configure environment variables
 echo "TELEGRAM_TOKEN=your_bot_token" > .env
-echo "ALLOWED_USERS=123456789" >> .env  # Replace with your Telegram ID
+echo "ALLOWED_USERS=YOUR_ID" >> .env  # Replace with your Telegram ID
 
 # Run the bot
 python tele_decode_bot.py
@@ -71,9 +71,9 @@ python tele_decode_bot.py
 
 ```
 SlayerBot/
-├── tele_decode_bot.py         # Telegram bot interface
+├── tele_decode_bot.py        # Telegram bot interface
 ├── decode_tool.py            # Core deobfuscation engine
-├── FakePyahmed_v3.c          # Honeypot trap (compiles to .so)
+├── Fake.c                    # Honeypot trap (compiles to .so)
 ├── spyblade_log.txt          # Malware interaction logs
 ├── decoded/                  # Analysis reports
 ├── Makefile                  # Trap compilation
@@ -103,4 +103,4 @@ MIT License. See LICENSE for details.
 ## 📬 Contact
 
 * **Author**: [Yuri]
-* **Telegram**: [@r4_cm]
+* **Telegram**: ([@r4_cm](https://t.me/r4_cm)
