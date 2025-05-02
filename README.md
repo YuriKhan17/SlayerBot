@@ -103,4 +103,4 @@ MIT License. See LICENSE for details.
 ## 📬 Contact
 
 * **Author**: [Yuri]
-* **Telegram**: ([@r4_cm](https://t.me/r4_cm)
+* **Telegram**: ([@r4_cm](https://t.me/r4_cm))
