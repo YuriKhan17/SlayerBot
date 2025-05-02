@@ -13,7 +13,7 @@ logging.basicConfig(
 
 # Configuration
 TOKEN = "YOUR_BOT_TOKEN"  # Replace with your actual bot token
-ALLOWED_USERS = [6244445306]  # List of allowed Telegram user IDs
+ALLOWED_USERS = [YOUR_ID]  # List of allowed Telegram user IDs
 
 bot = telebot.TeleBot(TOKEN)
 
