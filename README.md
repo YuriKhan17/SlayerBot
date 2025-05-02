@@ -1,77 +1,106 @@
-# SlayerBot - Python Malware Analysis Tool
+# 🔍 SlayerBot - Advanced Python Malware Analysis Toolkit
 
 ![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-lightgrey)
+[![Telegram](https://img.shields.io/badge/Telegram-Bot-blue.svg)](https://core.telegram.org/bots)
 
-SlayerBot is an automated Telegram bot for analyzing obfuscated Python malware. It decodes various obfuscation techniques, analyzes suspicious behavior, and provides detailed reports for security research.
-
-## 🔍 Features
-
-- **Automated Multi-layer Deobfuscation**: Handles base64, marshal, zlib, XOR, eval/exec chains
-- **Suspicious Import Analysis**: Identifies potentially malicious libraries and functions
-- **Network Indicators Extraction**: Automatically extracts URLs, IPs, and API keys
-- **Telegram Bot Interface**: Send malware samples, receive analysis reports
-- **Honeypot Functionality**: Includes a trap `.so` file to log and analyze malware behavior
-- **Detailed Reports**: Comprehensive Markdown reports with risk assessment
-
-## 📋 Project Structure
-
-```
-SlayerBot/
-├── decode_tool.py             🔍 Full decoder engine (XOR, marshal, .pyc, base64, zip, etc.)
-├── tele_decode_bot.py         🤖 Telegram bot interface
-├── Fake.c                     🪤 Trap .so to log and analyze demons
-├── Makefile                   🛠 Auto compile trap
-├── spyblade_log.txt           📓 Created when demon triggers the trap
-├── decoded/                   📁 All timestamped decoded outputs
-├── logs/                      📁 Telegram logs and outputs
-├── requirements.txt           📦 Python packages
-└── README.md                  📘 GitHub doc
-```
-
-## 🚀 Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/YuriKhan17/SlayerBot.git
-cd SlayerBot
-```
-
-2. Install required packages:
-```bash
-pip install -r requirements.txt
-```
-
-3. Compile the trap `.so` file:
-```bash
-make
-```
-
-4. Configure your Telegram bot:
-   - Create a bot with [@BotFather](https://t.me/botfather) on Telegram
-   - Replace `YOUR_BOT_TOKEN` in `tele_decode_bot.py` with your actual token
-   - Set your Telegram user ID in the `ALLOWED_USERS` list
-
-5. Run the bot:
-```bash
-python tele_decode_bot.py
-```
-
-## 📊 Usage
-
-1. Start a chat with your bot on Telegram
-2. Send `/start` to verify the bot is working
-3. Upload any Python file containing suspected malware
-4. The bot will analyze the file and return:
-   - A detailed markdown report of findings
-   - Log files if any suspicious activity was detected
-
-
-## 📧 Contact
-
-- Telegram - [@Yuri](https://t.me/r4_cm)
+**SlayerBot** is an automated malware analysis tool designed to deobfuscate and analyze malicious Python scripts. It combines multi-layer decoding, behavioral analysis, and a **honeypot trap** to detect and log malicious activity.
 
 ---
 
-⚠️ **Disclaimer**: This tool is for educational and research purposes only. Always use responsibly and legally.
+## 🚀 Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Multi-Layer Decoding** | Decodes `base64`, `marshal`, `zlib`, `XOR`, `eval/exec` chains, and embedded `.zip` files |
+| **Behavioral Analysis** | AST-based detection of dangerous calls (`system`, `eval`, `ctypes`) |
+| **Network Forensics** | Extracts URLs, IPs, and API keys from obfuscated payloads |
+| **Honeypot Trap** | `FakePyahmed.so` logs malware interactions with native libraries |
+| **Telegram Bot** | Secure remote analysis via encrypted Telegram API |
+| **Markdown Reports** | Detailed analysis output with risk scoring |
+
+---
+
+## ⚙️ Installation
+
+### Prerequisites
+- Python 3.7+
+- Linux/macOS (Windows untested)
+- Telegram Bot Token ([@BotFather](https://t.me/botfather))
+
+### Steps
+```bash
+git clone https://github.com/YuriKhan17/SlayerBot.git
+cd SlayerBot
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Compile the honeypot trap
+make clean && make
+
+# Configure environment variables
+echo "TELEGRAM_TOKEN=your_bot_token" > .env
+echo "ALLOWED_USERS=123456789" >> .env  # Replace with your Telegram ID
+
+# Run the bot
+python tele_decode_bot.py
+```
+
+## 🛡️ Usage
+
+### Telegram Bot Commands
+
+| Command | Action |
+|---------|--------|
+| `/start` | Show bot introduction |
+| `/help` | List available commands |
+| `/log` | Download malware interaction logs |
+| `/last` | Retrieve the latest analysis report |
+
+### Sample Workflow
+1. Send a suspicious `.py` file to your bot
+2. Receive automated analysis:
+   * Decoded source code
+   * Extracted IOCs (IPs/URLs)
+   * Behavioral flags
+3. Check `spyblade_log.txt` for trap triggers
+
+## 🏗️ Project Structure
+
+```
+SlayerBot/
+├── tele_decode_bot.py         # Telegram bot interface
+├── decode_tool.py            # Core deobfuscation engine
+├── FakePyahmed_v3.c          # Honeypot trap (compiles to .so)
+├── spyblade_log.txt          # Malware interaction logs
+├── decoded/                  # Analysis reports
+├── Makefile                  # Trap compilation
+└── requirements.txt          # Python dependencies
+```
+
+## ⚠️ Security Considerations
+
+1. **Isolate Execution**
+   * Run in a **Docker container** or VM:
+```bash
+docker build -t slayerbot . && docker run -it slayerbot
+```
+
+2. **Token Protection**
+   * Never hardcode credentials. Use `.env` + `python-dotenv`.
+   
+3. **Input Validation**
+   * All user uploads are saved with sanitized filenames.
+
+## 📜 License
+
+MIT License. See LICENSE for details.
+
+**Disclaimer**: Use only for **authorized security research**. The developers assume no liability for misuse.
+
+## 📬 Contact
+
+* **Author**: [Yuri]
+* **Telegram**: [@r4_cm]
