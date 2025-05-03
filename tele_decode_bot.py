@@ -1,137 +1,100 @@
 # tele_decode_bot.py
 import telebot
 import os
-from decode_tool import decode_file, save_decoded, slash_dump_mode
+import time
 import logging
+from decode_tool import decode_file, save_decoded, slash_dump_mode
 
-# Setup logging
-logging.basicConfig(
-    filename="spyblade_log.txt",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+API_TOKEN = 'API_TOKEN'
+ALLOWED_USERS = [6244445306]  # Replace with your Telegram user ID
 
-# Configuration
-TOKEN = "YOUR_BOT_TOKEN"  # Replace with your actual bot token
-ALLOWED_USERS = [YOUR_ID]  # List of allowed Telegram user IDs
+bot = telebot.TeleBot(API_TOKEN)
+logging.basicConfig(level=logging.INFO)
 
-bot = telebot.TeleBot(TOKEN)
-
-@bot.message_handler(commands=['start', 'help'])
+@bot.message_handler(commands=['start'])
 def send_welcome(message):
     if message.from_user.id not in ALLOWED_USERS:
-        bot.reply_to(message, "Access Denied.")
         return
-
     welcome_text = (
-        "🤖 *SlayerBot - Demon Decoder* 🤖\n\n"
-        "Send me a `.py`, `.pyc`, or `.zip` file and I will:\n"
-        "🔍 Detect: marshal, base64, XOR, zlib, pyc, zipapps\n"
-        "🧪 Inject: a trap `.so` to catch native demons\n"
-        "📤 Return: full decoded code + log if demon triggered\n\n"
-        "*Commands:*\n"
-        "`/last` - get last decoded file\n"
-        "`/log` - get latest spyblade_log.txt\n"
-        "`/slash` - fast extract mode (raw payloads)"
+        "🤖 SlayerBot Activated!\n\n"
+        "Send me an obfuscated Python file (.py, .pyc, or .zip)\n"
+        "and I will decode it for you.\n\n"
+        "Commands:\n"
+        "/last - Get last decoded file\n"
+        "/log - Get latest spyblade_log.txt\n"
+        "/slash - Extract slash dumped payload (if present)"
     )
+    bot.reply_to(message, welcome_text)  # no parse_mode here
 
-    bot.reply_to(message, welcome_text, parse_mode="Markdown")
+@bot.message_handler(commands=['last'])
+def send_last_decoded(message):
+    if message.from_user.id not in ALLOWED_USERS:
+        return
+    try:
+        latest = sorted([f for f in os.listdir('.') if f.startswith("decoded_")], reverse=True)[0]
+        with open(latest, 'rb') as f:
+            bot.send_document(message.chat.id, f)
+    except IndexError:
+        bot.reply_to(message, "No decoded files found.")
+
+@bot.message_handler(commands=['log'])
+def send_spyblade_log(message):
+    if message.from_user.id not in ALLOWED_USERS:
+        return
+    if os.path.exists("spyblade_log.txt"):
+        with open("spyblade_log.txt", 'rb') as f:
+            bot.send_document(message.chat.id, f)
+    else:
+        bot.reply_to(message, "spyblade_log.txt not found.")
 
 @bot.message_handler(commands=['slash'])
 def handle_slash(message):
     if message.from_user.id not in ALLOWED_USERS:
-        bot.reply_to(message, "Access Denied.")
         return
-
-    last_file = sorted([f for f in os.listdir("decoded") if f.endswith(".py")], reverse=True)
-    if not last_file:
-        bot.reply_to(message, "No decoded files available.")
-        return
-
-    base_path = os.path.join("decoded", last_file[0])
-    results = slash_dump_mode(base_path)
-
-    if not results:
-        bot.reply_to(message, "No extractable base64 payloads found.")
-        return
-
-    bot.send_message(message.chat.id, f"Extracted {len(results)} payload(s):")
-    for r in results:
-        with open(r, 'rb') as f:
-            bot.send_document(message.chat.id, f, caption=f"Extracted: {r}")
-
-@bot.message_handler(commands=['log'])
-def send_log(message):
-    if message.from_user.id not in ALLOWED_USERS:
-        bot.reply_to(message, "Access Denied.")
-        return
-    try:
-        with open("spyblade_log.txt", "rb") as log:
-            bot.send_document(message.chat.id, log, caption="📝 Spyblade Log")
-    except FileNotFoundError:
-        bot.reply_to(message, "Log file not found.")
-
-@bot.message_handler(commands=['last'])
-def send_last(message):
-    if message.from_user.id not in ALLOWED_USERS:
-        bot.reply_to(message, "Access Denied.")
-        return
-
-    decoded = sorted([f for f in os.listdir("decoded") if f.endswith(".md")], reverse=True)
-    if not decoded:
-        bot.reply_to(message, "No analysis reports available.")
-        return
-
-    with open(os.path.join("decoded", decoded[0]), "rb") as f:
-        bot.send_document(message.chat.id, f, caption="📊 Last Analysis Report")
+    if os.path.exists("decoded_last.py"):
+        payload_path = slash_dump_mode("decoded_last.py")
+        if payload_path and os.path.exists(payload_path):
+            with open(payload_path, 'rb') as f:
+                bot.send_document(message.chat.id, f)
+        else:
+            bot.reply_to(message, "No base64 payload found.")
+    else:
+        bot.reply_to(message, "No last decoded file available.")
 
 @bot.message_handler(content_types=['document'])
 def handle_file(message):
     if message.from_user.id not in ALLOWED_USERS:
-        bot.reply_to(message, "Access Denied.")
         return
+    file_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
 
-    file_name = message.document.file_name
-    if not file_name.lower().endswith('.py'):
-        bot.reply_to(message, "Please send only Python (.py) files for analysis.")
-        return
-
-    processing_msg = bot.reply_to(message, "🔍 Processing your file... This may take a moment.")
+    fname = f"temp_{int(time.time())}_{message.document.file_name}"
+    with open(fname, 'wb') as f:
+        f.write(downloaded_file)
 
     try:
-        file_info = bot.get_file(message.document.file_id)
-        downloaded = bot.download_file(file_info.file_path)
-        safe_filename = f"input_{message.from_user.id}_{message.message_id}.py"
-        with open(safe_filename, "wb") as f:
-            f.write(downloaded)
+        result = decode_file(fname)
 
-        logging.info(f"Received file: {file_name} from user {message.from_user.id}")
-        bot.edit_message_text("File received. Running analysis...", message.chat.id, processing_msg.message_id)
+        if isinstance(result, tuple):
+            decoded_code, original_name = result
+            final_path = save_decoded(decoded_code, original_name)
+        else:
+            final_path = save_decoded(result)
 
-        decoded, emoji = decode_file(safe_filename)
-        output_path = save_decoded(decoded)
+        with open(final_path, 'rb') as f:
+            bot.send_document(message.chat.id, f)
 
-        with open(output_path, "rb") as f:
-            bot.send_document(message.chat.id, f, caption=f"{emoji} Analysis Report")
-
-        try:
-            with open("spyblade_log.txt", "rb") as log:
-                bot.send_document(message.chat.id, log, caption="📝 Log")
-        except FileNotFoundError:
-            pass
-
-        os.remove(safe_filename)
+        if os.path.exists("spyblade_log.txt"):
+            with open("spyblade_log.txt", 'rb') as f:
+                bot.send_document(message.chat.id, f)
 
     except Exception as e:
-        bot.reply_to(message, f"❌ Error processing file: {str(e)}")
-        logging.error(f"Error processing file from user {message.from_user.id}: {str(e)}")
-
-def main():
-    if not os.path.exists("decoded"):
-        os.makedirs("decoded")
-    logging.info("SlayerBot is live.")
-    print("SlayerBot is running...")
-    bot.polling(none_stop=True)
+        bot.reply_to(message, f"Decoding failed: {e}")
+    finally:
+        if os.path.exists(fname):
+            os.remove(fname)
 
 if __name__ == "__main__":
-    main()
+    print("SlayerBot is running...")
+    bot.infinity_polling()
+
