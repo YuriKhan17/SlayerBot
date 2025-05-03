@@ -6,7 +6,7 @@ import logging
 from decode_tool import decode_file, save_decoded, slash_dump_mode
 
 API_TOKEN = 'TELEGRAM_TOKEN'
-ALLOWED_USERS = [6244445306]  # Replace with your Telegram user ID
+ALLOWED_USERS = [ALLOWED_USERS]  # Replace with your Telegram user ID
 
 bot = telebot.TeleBot(API_TOKEN)
 logging.basicConfig(level=logging.INFO)
